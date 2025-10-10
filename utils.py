@@ -1,3 +1,4 @@
+#Source: https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/utils_qa.py
 """
 Utility functions for switch precision training
 """
