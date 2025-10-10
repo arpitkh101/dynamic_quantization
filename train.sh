@@ -1,0 +1,20 @@
+python train.py \
+    --model_name_or_path gpt2 \
+    --dataset_name squad \
+    --per_device_train_batch_size 128 \
+    --per_device_eval_batch_size 256 \
+    --learning_rate 1e-03 \
+    --max_seq_length 512 \
+    --output_dir ./outputs/gpt2_qa_switch_precision \
+    --overwrite_output_dir \
+    --a_bits 4 6 8 16 \
+    --w_bits 4 6 8 16\
+    --max_steps 1000 \
+    --ranks 16 8 8 8\
+    --do_train \
+    --do_eval \
+    --alphas 32 16 16 16\
+    --dropouts 0.02 0.01 0.01 0.01\
+    --eval_steps 510 \
+    --save_steps 1000 \
+    --logging_steps 5
