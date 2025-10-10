@@ -186,7 +186,7 @@ This work builds upon several key papers in the field of quantization and advers
 
 ### Quantization and Training
 - **LLM-QAT**: Data-Free Quantization Aware Training for Large Language Models
-- **Instant Net**: Automated Generation and Deployment of Instantaneously Switchable-Precision Networks
+- **InstantNet**: Automated Generation and Deployment of Instantaneously Switchable-Precision Networks
 - **CPT**: Efficient Deep Neural Network Training via Cyclic Precision
 - **Double Win Quant**: Aggressively Winning Robustness of Quantized Deep Neural Networks via Random Precision Training and Inference
 
