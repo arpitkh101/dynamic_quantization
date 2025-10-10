@@ -1,4 +1,4 @@
-# Switchable and Dynamic quantization for GPT-2 Question Answering
+# Switchable and Dynamic quantization
 
 This project implements switch precision training for GPT-2 models on Question Answering tasks, combining dynamic quantization techniques with LoRA (Low-Rank Adaptation) for efficient training and inference.
 
