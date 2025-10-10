@@ -168,16 +168,14 @@ Comprehensive analysis framework that:
 
 
 
-## Adversarial Evaluation
+### Adversarial Evaluation
 
-The project includes a comprehensive adversarial attack evaluation framework:
-
-### Attack Strategies
+#### Attack Strategies
 - **Attention-based Ranking**: Uses model attention weights to identify critical words for perturbation
 - **Word Removal Attacks**: Systematically removes important words to test model robustness
 - **Combined Ranking**: Integrates multiple ranking strategies for enhanced attack effectiveness
 
-### Evaluation Framework
+#### Evaluation Framework
 - **Victim Model Wrapper**: Specialized GPT-2 QA model wrapper for adversarial testing
 - **Multi-metric Evaluation**: F1 score, Exact Match, and attack success rate analysis
 - **BERT-based Candidate Generation**: Uses BERT MLM for generating adversarial word candidates
