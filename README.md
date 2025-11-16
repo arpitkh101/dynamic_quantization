@@ -204,6 +204,8 @@ and distillation.
 ### 2. Layer-Wise Sensitivity
 Each layer of an 8-bit model is selectively reduced to 6-bit/4-bit.
 
+![Switchable Precision Results](layer_sensitivity.png)
+
 **Key Findings**
 - `attn.c_proj` is highly robust → safe to quantize.
 - `attn.c_attn` + `mlp.c_fc` are most sensitive.
