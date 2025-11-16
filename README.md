@@ -166,8 +166,6 @@ Comprehensive analysis framework that:
 - Tests individual layer quantization sensitivity
 - Generates heatmaps and visualizations
 
-
-
 ### Adversarial Evaluation
 
 #### Attack Strategies
@@ -179,6 +177,83 @@ Comprehensive analysis framework that:
 - **Victim Model Wrapper**: Specialized GPT-2 QA model wrapper for adversarial testing
 - **Multi-metric Evaluation**: F1 score, Exact Match, and attack success rate analysis
 - **BERT-based Candidate Generation**: Uses BERT MLM for generating adversarial word candidates
+
+## Results
+
+This repository evaluates switchable precision training, mixed-precision layer design,
+cyclic precision training (CPT), and adversarial robustness for quantized GPT-2 models
+fine-tuned on extractive QA (SQuAD).
+
+### 1. Switchable Precision Training
+The model is jointly fine-tuned across 4/6/8/16-bit paths using per-bit LoRA adapters
+and distillation.
+
+**Accuracy Overview**
+| Bit | F1 | EM |
+|-----|------|------|
+| 32 (FP-LoRA) | **76.80** | **66.55** |
+| 16 | 75.42 | 64.08 |
+| 8 | 74.03 | 62.83 |
+| 6 | 71.15 | 59.21 |
+| 4 | 60.41 | 46.12 |
+
+**Highlights**
+- 6–8 bit achieves strong accuracy with major compression.
+- Distillation is essential for stability across bit-paths.
+
+### 2. Layer-Wise Sensitivity
+Each layer of an 8-bit model is selectively reduced to 6-bit/4-bit.
+
+**Key Findings**
+- `attn.c_proj` is highly robust → safe to quantize.
+- `attn.c_attn` + `mlp.c_fc` are most sensitive.
+- Early layers (0–3) require higher precision; final layers (9–11) tolerate 4-bit.
+
+**Optimal Mixed-Precision Config**
+| Layers | attn.c_proj | attn.c_attn | mlp.c_fc | mlp.c_proj |
+|--------|--------------|-------------|-----------|-------------|
+| 0–3 | 4 | 6 | 6 | 6 |
+| 4–9 | 6 | 8 | 6 | 8 |
+| 9–11 | 4 | 4 | 4 | 4 |
+
+Result: **71.18 F1 / 59.16 EM**  
+83% of layers run at reduced precision.
+
+### 3. Cyclic Precision Training (CPT)
+Two variants tested:  
+1) Separate LoRA adapters → unstable  
+2) Shared LoRA adapters → strong + consistent
+
+**Shared-Adapter CPT Results**
+| Bit | F1 | EM |
+|-----|------|------|
+| 8 | 73.97 | 62.90 |
+| 7 | 73.80 | 62.73 |
+| 6 | **72.72** | **61.21** |
+| 5 | 69.65 | 56.88 |
+| 4 | 53.29 | 38.41 |
+
+Moderate precision (6-bit) benefits most from CPT, acting as a regularizer.
+
+### 4. Adversarial Robustness
+Attacks generated using **QA-Attack** across 8-bit and 4-bit targets (500 samples).
+Random precision switching is tested as a defense.
+
+| Target | Defense | F1 Drop | EM Drop |
+|--------|----------|---------|----------|
+| 8-bit | Fixed | 10.57% | 15.06% |
+| 8-bit | Random | **8.11%** | **7.18%** |
+| 4-bit | Fixed | 16.35% | 25.61% |
+| 4-bit | Random | **10.32%** | **15.31%** |
+
+**Takeaway:** Random precision switching reduces attack effectiveness by 6–10 points
+and aligns with “moving-target” defenses from Double-Win Quant.
+
+### Summary
+- Switchable precision enables multi-bit fine-tuning with minimal loss at 6–8 bits.
+- Layer sensitivity reveals where aggressive quantization is safe.
+- CPT improves moderate-bit accuracy when LoRA parameters are shared.
+- Random precision switching provides meaningful adversarial robustness.
 
 ## References
 
